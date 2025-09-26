@@ -16,15 +16,15 @@ jobs:
       - name: Azure login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ fromJson(secrets.AZURE_CREDENTIALS) }}
 
       # Comando Docker Login no ACR
       - name: Docker login to ACR
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.ACR_NAME }}
-          username: ${{ secrets.AZURE_CREDENTIALS.clientId }}
-          password: ${{ secrets.AZURE_CREDENTIALS.clientSecret }}
+          username: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientId }}
+          password: ${{ fromJson(secrets.AZURE_CREDENTIALS).clientSecret }}
 
       # Construir a imagem com a tag mais recente (latest) e a tag baseada no commit SHA
       - name: Build and Tag image
