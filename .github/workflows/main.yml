@@ -46,7 +46,7 @@ jobs:
           # Usa o segredo KUBERNETES_CREDENTIALS que você criou
           kubeconfig: ${{ secrets.KUBERNETES_CREDENTIALS }}
           
-      # 7. Aplicar o Manifesto Kubernetes
+      # 7. Apply Manifesto Kubernetes
       - name: Deploy to AKS
         uses: azure/k8s-deploy@v4
         with:
