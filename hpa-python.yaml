@@ -12,7 +12,7 @@ spec:
     kind: Deployment
     name: hello-python-deployment 
   minReplicas: 1
-  maxReplicas: 10 # Limite de escalamento
+  maxReplicas: 5 # Limite de escalamento
   metrics:
   - type: Resource
     resource:
