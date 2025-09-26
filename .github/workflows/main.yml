@@ -40,21 +40,21 @@ jobs:
 
 
         # 6. Definir o Contexto do AKS (Faz login no cluster)
+      # 6. Definir o Contexto do AKS (CORRIGIDO)
       - name: Set AKS Context
         uses: azure/aks-set-context@v3
         with:
-          # Usa o segredo KUBERNETES_CREDENTIALS que você criou
-          kubeconfig: ${{ secrets.KUBERNETES_CREDENTIALS }}
+          # A Action agora usa o Service Principal (AZURE_CREDENTIALS) do Passo 2 para autenticação.
+          # Fornecemos apenas o nome e o grupo do cluster.
+          resource-group: k8scluster_group 
+          cluster-name: clusterk8s
           
-      # 7. Apply Manifesto Kubernetes
+      # 7. Aplicar o Manifesto Kubernetes
       - name: Deploy to AKS
         uses: azure/k8s-deploy@v4
         with:
-          # Garante que o ficheiro hello-python.yaml está na raiz do seu repositório
           manifests: |
             hello-python.yaml
-          # Indica qual imagem acabou de ser enviada
           images: |
             ${{ steps.build-image.outputs.image_tag }}
-          # O namespace que você definiu no seu YAML
           namespace: azure-store-1758905293727
