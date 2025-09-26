@@ -23,7 +23,7 @@ jobs:
         uses: azure/docker-login@v2
         with:
           login-server: ${{ secrets.ACR_NAME }}
-          username: ${{ secrets.AZURE_CREDENTIALS.clientId }}
+          username: ${{ secrets.USERNAME }}
           password: ${{ secrets.AZURE_CREDENTIALS.clientSecret }}
 
       # Construir a imagem com a tag mais recente (latest) e a tag baseada no commit SHA
