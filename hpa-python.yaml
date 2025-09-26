@@ -1,0 +1,24 @@
+# hpa-python.yaml
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hello-python-hpa
+  namespace: azure-store-1758905293727
+spec:
+  scaleTargetRef:
+    # Aponta para o Deployment que queremos escalar
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hello-python-deployment 
+  minReplicas: 1
+  maxReplicas: 10 # Limite de escalamento
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        # O HPA tentará manter a utilização média de CPU em 50% 
+        # (50% de 100m de request = 50m de CPU)
+        averageUtilization: 50

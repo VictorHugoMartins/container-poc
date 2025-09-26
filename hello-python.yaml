@@ -1,0 +1,45 @@
+# hello-python.yaml
+
+# 1. Deployment da Aplicação Python
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-python-deployment
+  namespace: azure-store-1758905293727
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-python
+  template:
+    metadata:
+      labels:
+        app: hello-python
+    spec:
+      containers:
+      - name: hello-python-container
+        # SUBSTITUA: Use o endereço do seu Azure Container Registry (ACR)
+        image: clusterk8sregistry.azurecr.io/hello-python:latest 
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: "100m"  # Base para o HPA: 10% de um núcleo
+            memory: "128Mi"
+          limits:
+            cpu: "500m"  # Limite máximo de CPU permitido
+            memory: "256Mi"
+---
+# 2. Service LoadBalancer para Acesso Público
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-python-service
+  namespace: azure-store-1758905293727
+spec:
+  type: LoadBalancer # Expõe o serviço publicamente
+  ports:
+  - port: 80
+    targetPort: 8080 # A porta em que o Flask está a ouvir
+  selector:
+    app: hello-python

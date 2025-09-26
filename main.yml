@@ -1,0 +1,39 @@
+name: Build and Push Docker Image to ACR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout do código
+      - uses: actions/checkout@v4
+
+      # Login no Azure
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Comando Docker Login no ACR
+      - name: Docker login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_NAME }}
+          username: ${{ secrets.AZURE_CREDENTIALS.clientId }}
+          password: ${{ secrets.AZURE_CREDENTIALS.clientSecret }}
+
+      # Construir a imagem com a tag mais recente (latest) e a tag baseada no commit SHA
+      - name: Build and Tag image
+        id: build-image
+        run: |
+          IMAGE_TAG=${{ secrets.ACR_NAME }}/${{ secrets.IMAGE_NAME }}:latest
+          docker build . -t $IMAGE_TAG
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      # Enviar a imagem para o ACR
+      - name: Push image to ACR
+        run: docker push ${{ steps.build-image.outputs.image_tag }}
