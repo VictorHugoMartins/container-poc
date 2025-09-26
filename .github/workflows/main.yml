@@ -24,7 +24,7 @@ jobs:
         with:
           login-server: ${{ secrets.ACR_NAME }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.AZURE_CREDENTIALS.clientSecret }}
+          password: ${{ secrets.PASSWORD }}
 
       # Construir a imagem com a tag mais recente (latest) e a tag baseada no commit SHA
       - name: Build and Tag image
