@@ -59,7 +59,7 @@ jobs:
           # Inclua o novo arquivo hpa-hello-python.yaml aqui
           manifests: |
             hello-python.yaml
-            hpa-hello-python.yaml
+            hello-python-hpa.yaml
           images: |
             ${{ steps.build-image.outputs.image_tag }}
           namespace: azure-store-1758905293727
