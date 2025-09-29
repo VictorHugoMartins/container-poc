@@ -9,16 +9,16 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      # Code checkout
+      # 1 - Code checkout
       - uses: actions/checkout@v4
 
-      # Login no Azure
+      # 2 - Login no Azure
       - name: Azure login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Comando Docker Login no ACR
+      # 3 - Comando Docker Login no ACR
       - name: Docker login to ACR
         uses: azure/docker-login@v2
         with:
@@ -26,7 +26,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
 
-      # Construir a imagem com a tag mais recente (latest) e a tag baseada no commit SHA
+      # 4 - Construir a imagem com a tag mais recente (latest) e a tag baseada no commit SHA
       - name: Build and Tag image
         id: build-image
         run: |
@@ -34,21 +34,21 @@ jobs:
           docker build . -t $IMAGE_TAG
           echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      # Enviar a imagem para o ACR
+      # 5 - Enviar a imagem para o ACR
       - name: Push image to ACR
         run: docker push ${{ steps.build-image.outputs.image_tag }}
 
-
+      # ------------------ ETAPAS DE DEPLOYMENT (CD) ------------------
       # 6. Definir o Contexto do AKS (CORRIGIDO)
-      # - name: Set AKS Context
-      #   uses: azure/aks-set-context@v3
-      #   with:
-      #     # A Action agora usa o Service Principal (AZURE_CREDENTIALS) do Passo 2 para autenticação.
-      #     # Fornecemos apenas o nome e o grupo do cluster.
-      #     resource-group: k8scluster_group 
-      #     cluster-name: clusterk8s
+      - name: Set AKS Context
+        uses: azure/aks-set-context@v3
+        with:
+          # A Action agora usa o Service Principal (AZURE_CREDENTIALS) do Passo 2 para autenticação.
+          # Fornecemos apenas o nome e o grupo do cluster.
+          resource-group: k8scluster_group 
+          cluster-name: clusterk8s
           
-      # # 7. Aplicar o Manifesto Kubernetes
+      # 7. Aplicar o Manifesto Kubernetes
       # - name: Deploy to AKS
       #   uses: azure/k8s-deploy@v4
       #   with:
