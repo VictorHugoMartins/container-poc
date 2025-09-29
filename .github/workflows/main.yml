@@ -51,7 +51,7 @@ jobs:
       # 7 - Criar o namespace se ele não existir
       - name: Criar namespace se não existir
         run: |
-          kubectl create namespace test-namespace --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create namespace azure-store-1758905293727 --dry-run=client -o yaml | kubectl apply -f -
           
       #  8 - Aplicar o Manifesto Kubernetes
       - name: Deploy to AKS
@@ -61,4 +61,4 @@ jobs:
             hello-python.yaml
           images: |
             ${{ steps.build-image.outputs.image_tag }}
-          namespace: test-namespace
+          namespace: azure-store-1758905293727
