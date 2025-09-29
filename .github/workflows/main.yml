@@ -47,8 +47,13 @@ jobs:
           # Fornecemos apenas o nome e o grupo do cluster.
           resource-group: k8scluster_group 
           cluster-name: clusterk8s
+
+      # 7 - Criar o namespace se ele não existir
+      - name: Criar namespace se não existir
+        run: |
+          kubectl create namespace test-namespace --dry-run=client -o yaml | kubectl apply -f -
           
-      #  7 - Aplicar o Manifesto Kubernetes
+      #  8 - Aplicar o Manifesto Kubernetes
       - name: Deploy to AKS
         uses: azure/k8s-deploy@v4
         with:
@@ -56,4 +61,4 @@ jobs:
             hello-python.yaml
           images: |
             ${{ steps.build-image.outputs.image_tag }}
-          namespace: azure-store-1758905293727
+          namespace: test-namespace
