@@ -38,7 +38,6 @@ jobs:
       - name: Push image to ACR
         run: docker push ${{ steps.build-image.outputs.image_tag }}
 
-      # ------------------ ETAPAS DE DEPLOYMENT (CD) ------------------
       # 6 - Definir o Contexto do AKS (CORRIGIDO)
       - name: Set AKS Context
         uses: azure/aks-set-context@v3
@@ -49,7 +48,7 @@ jobs:
           cluster-name: clusterk8s
 
       # 7 - Criar o namespace se ele não existir
-      - name: Criar namespace se não existir
+      - name: Create namespace if not exists
         run: |
           kubectl create namespace azure-store-1758905293727 --dry-run=client -o yaml | kubectl apply -f -
           
