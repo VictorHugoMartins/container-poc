@@ -39,7 +39,7 @@ jobs:
         run: docker push ${{ steps.build-image.outputs.image_tag }}
 
       # ------------------ ETAPAS DE DEPLOYMENT (CD) ------------------
-      # 6. Definir o Contexto do AKS (CORRIGIDO)
+      # 6 - Definir o Contexto do AKS (CORRIGIDO)
       - name: Set AKS Context
         uses: azure/aks-set-context@v3
         with:
@@ -48,12 +48,12 @@ jobs:
           resource-group: k8scluster_group 
           cluster-name: clusterk8s
           
-      #  Aplicar o Manifesto Kubernetes
-      # - name: Deploy to AKS
-      #   uses: azure/k8s-deploy@v4
-      #   with:
-      #     manifests: |
-      #       hello-python.yaml
-      #     images: |
-      #       ${{ steps.build-image.outputs.image_tag }}
-      #     namespace: azure-store-1758905293727
+      #  7 - Aplicar o Manifesto Kubernetes
+      - name: Deploy to AKS
+        uses: azure/k8s-deploy@v4
+        with:
+          manifests: |
+            hello-python.yaml
+          images: |
+            ${{ steps.build-image.outputs.image_tag }}
+          namespace: azure-store-1758905293727
