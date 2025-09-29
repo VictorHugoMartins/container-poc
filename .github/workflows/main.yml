@@ -48,7 +48,7 @@ jobs:
           resource-group: k8scluster_group 
           cluster-name: clusterk8s
           
-      # 7. Aplicar o Manifesto Kubernetes
+      #  Aplicar o Manifesto Kubernetes
       # - name: Deploy to AKS
       #   uses: azure/k8s-deploy@v4
       #   with:
