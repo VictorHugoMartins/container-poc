@@ -61,6 +61,7 @@ def get_user_emails() -> List[str]:
             result = db_conn.execute(sqlalchemy.text(query))
             
             for row in result:
+                print(row[0])
                 emails.append(row[0]) 
 
             print("Consulta concluída com sucesso!")
@@ -80,7 +81,7 @@ def lista_emails():
     lista_emails = get_user_emails()
     
     if lista_emails:
-        return lista_emails
+        return jsonify(lista_emails)
     else:
         return jsonify("Nenhum e-mail encontrado ou erro de conexão/consulta.")
 
