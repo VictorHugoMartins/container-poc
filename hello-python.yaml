@@ -30,7 +30,7 @@ spec:
               name: app-config-secret
               key: DB_PASS
         - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: "/var/secrets/gcp/gcp-service-account.json"
+          value: "/var/secrets/gcp/gcp-service-account.json"
               
         resources:
           requests:
