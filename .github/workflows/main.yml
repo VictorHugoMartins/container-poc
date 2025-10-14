@@ -60,6 +60,15 @@ jobs:
             --namespace azure-store-1758905293727 \
             --from-literal=DB_PASS=${{ secrets.DB_PASS }} \
             --dry-run=client -o yaml | kubectl apply -f -
+
+      # 7b - Criar o Secret com a Chave JSON do GCP
+      - name: Create GCP Service Account Secret
+        run: |
+          # O valor é o JSON inteiro, armazenado como uma variável de ambiente.
+          kubectl create secret generic gcp-svc-key \
+            --namespace azure-store-1758905293727 \
+            --from-literal=gcp-service-account.json='${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}' \
+            --dry-run=client -o yaml | kubectl apply -f -
           
       #  8 - Aplicar o Manifesto Kubernetes (Deployment e HPA)
       - name: Deploy to AKS
