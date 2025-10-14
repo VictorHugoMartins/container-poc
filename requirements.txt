@@ -2,3 +2,5 @@ Flask
 gunicorn
 mysql-connector-python
 sqlalchemy
+google-cloud-sql-connector
+pymysql
