@@ -62,13 +62,18 @@ jobs:
             --dry-run=client -o yaml | kubectl apply -f -
 
       # 7b - Criar o Secret com a Chave JSON do GCP
-      - name: Create GCP Service Account Secret
+      - name: Create Kubernetes Secret for GCP Service Account
+        # O comando usa 'kubectl create secret generic' para criar um secret
+        # A flag --from-literal usa o valor do Secret do GitHub (secrets.GCP_SERVICE_ACCOUNT_JSON)
+        # O valor é armazenado com a chave 'gcp-service-account.json' dentro do Secret do K8s.
         run: |
-          # O valor é o JSON inteiro, armazenado como uma variável de ambiente.
           kubectl create secret generic gcp-svc-key \
             --namespace azure-store-1758905293727 \
             --from-literal=gcp-service-account.json='${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}' \
             --dry-run=client -o yaml | kubectl apply -f -
+        env:
+          # Certifique-se de que sua variável NAMESPACE esteja definida aqui ou globalmente
+          NAMESPACE: azure-store-1758905293727
           
       #  8 - Aplicar o Manifesto Kubernetes (Deployment e HPA)
       - name: Deploy to AKS
