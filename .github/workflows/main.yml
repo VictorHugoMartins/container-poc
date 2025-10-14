@@ -51,6 +51,15 @@ jobs:
       - name: Create namespace if not exists
         run: |
           kubectl create namespace azure-store-1758905293727 --dry-run=client -o yaml | kubectl apply -f -
+
+      # 7a - Criar o Secret com as variáveis de conexão do BD
+      - name: Create Kubernetes Secret
+        run: |
+          # NOTA: O nome do Secret deve ser 'app-config-secret' ou outro nome de sua escolha
+          kubectl create secret generic app-config-secret \
+            --namespace azure-store-1758905293727 \
+            --from-literal=DB_PASS=${{ secrets.DB_PASS }} \
+            --dry-run=client -o yaml | kubectl apply -f -
           
       #  8 - Aplicar o Manifesto Kubernetes (Deployment e HPA)
       - name: Deploy to AKS
