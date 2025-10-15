@@ -46,11 +46,20 @@ def connect_with_connector() -> sqlalchemy.engine.base.Engine:
     )
     return pool
 
+# --- Inicialização do Banco de Dados ---
+# ⚠️ CRIE O POOL DE CONEXÕES APENAS UMA VEZ
+try:
+    db_engine = connect_with_connector()
+    print("Pool de Conexões do Cloud SQL inicializado com sucesso.")
+except Exception as e:
+    # Se falhar aqui, a aplicação não deve subir (comportamento desejado)
+    print(f"ERRO CRÍTICO AO INICIALIZAR O POOL DE CONEXÕES: {e}")
+    db_engine = None # Deixe como None ou levante o erro (raise)
+
 def get_user_emails() -> List[str]:
     """Conecta ao banco de dados e retorna a lista de e-mails."""
     
     # 1. Estabelece a conexão (pool)
-    db_engine = connect_with_connector()
     emails = []
     
     query = f"SELECT {EMAIL_COLUMN} FROM {USER_TABLE};" 
@@ -59,19 +68,13 @@ def get_user_emails() -> List[str]:
         print("Conectando e executando a consulta...")
         with db_engine.connect() as db_conn:
             result = db_conn.execute(sqlalchemy.text(query))
-            
             for row in result:
                 print(row[0])
                 emails.append(row[0]) 
-
             print("Consulta concluída com sucesso!")
 
     except Exception as e:
         print(f"Ocorreu um erro ao conectar ou consultar o banco de dados: {e}")
-        
-    finally:
-        # Fechar o pool de conexões (importante)
-        db_engine.dispose()
         
     return emails
 
