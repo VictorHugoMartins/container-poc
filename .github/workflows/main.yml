@@ -75,9 +75,9 @@ jobs:
           # Certifique-se de que sua variável NAMESPACE esteja definida aqui ou globalmente
           NAMESPACE: azure-store-1758905293727
 
-      - name: Clean Up Conflicting Ingress Namespace
-        run: |
-          kubectl delete namespace ingress-basic --ignore-not-found=true
+      # - name: Clean Up Conflicting Ingress Namespace
+      #   run: |
+      #     kubectl delete namespace ingress-basic --ignore-not-found=true
           
       #  8 - Aplicar o Manifesto Kubernetes (Deployment e HPA)
       - name: Deploy to AKS
