@@ -76,7 +76,7 @@ jobs:
           NAMESPACE: azure-store-1758905293727
 
       - name: Clean Up Conflicting Ingress Namespace
-        uses: azure/k8s-actions/kubectl-commands@v4
+        uses: azure/k8s-actions/kubectl-commands@v3
         with:
           arguments: delete namespace ingress-basic --ignore-not-found=true
           
