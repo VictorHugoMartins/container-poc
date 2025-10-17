@@ -64,5 +64,5 @@ spec:
     port: 80
     targetPort: 8080 # A porta em que o Flask está a ouvir
     protocol: TCP
-selector:
+  selector:
     app: hello-python
