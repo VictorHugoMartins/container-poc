@@ -1,0 +1,40 @@
+# hello-python-ingress.yaml
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-python-ingress
+  namespace: azure-store-1758905293727
+  annotations:
+    # 1. ANOTAÇÃO CRUCIAL PARA SSL/TLS (Cert-Manager)
+    # Define qual ClusterIssuer (Let's Encrypt) o cert-manager deve usar.
+    cert-manager.io/cluster-issuer: letsencrypt-prod 
+
+    # 2. ANOTAÇÃO PARA REDIRECIONAMENTO HTTP -> HTTPS (NGINX)
+    # Garante que todo tráfego não-seguro (porta 80) seja redirecionado para HTTPS (porta 443).
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+spec:
+  # 3. CLASSE DO INGRESS (Define qual Controller irá processar este arquivo)
+  ingressClassName: nginx # Deve ser 'nginx', pois instalamos o NGINX Ingress Controller
+
+  # 4. CONFIGURAÇÃO DE TLS/SSL
+  tls:
+  - hosts:
+    # O domínio para o qual o certificado será emitido.
+    - hello-python-aks.duckdns.org 
+    # O nome do Secret onde o cert-manager irá ARMAZENAR o certificado emitido.
+    secretName: hello-python-tls 
+
+  # 5. REGRAS DE ROTEAMENTO
+  rules:
+  - host: hello-python-aks.duckdns.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hello-python-service # Nome do Service ClusterIP que criamos
+            port:
+              number: 80 # A porta do Service ClusterIP (80)

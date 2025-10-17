@@ -1,5 +1,3 @@
-# hello-python.yaml
-
 # 1. Deployment da Aplicação Python
 apiVersion: apps/v1
 kind: Deployment
@@ -45,10 +43,10 @@ spec:
             mountPath: "/var/secrets/gcp" # Onde a chave JSON será acessível no container
             readOnly: true
 
-      volumes: # <--- Adicione esta seção
+      volumes:
       - name: gcp-key-volume
         secret:
-          secretName: gcp-svc-key # O nome do Secret criado no Passo 2
+          secretName: gcp-svc-key # O nome do Secret criado
           items:
             - key: gcp-service-account.json
               path: gcp-service-account.json
@@ -59,11 +57,9 @@ kind: Service
 metadata:
   name: hello-python-service
   namespace: azure-store-1758905293727
-  # Adicione anotações para forçar o LoadBalancer a ouvir na 443
 spec:
   type: ClusterIP
   ports:
-  # Porta 80 para HTTP e Validação ACME
   - name: http
     port: 80
     targetPort: 8080 # A porta em que o Flask está a ouvir
