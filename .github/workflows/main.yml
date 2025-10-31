@@ -86,6 +86,7 @@ jobs:
           # Inclua o novo arquivo hpa-hello-python.yaml aqui
           manifests: |
             hello-python.yaml
+            hello-python-service.yaml
             hello-python-hpa.yaml
           images: |
             ${{ steps.build-image.outputs.image_tag }}

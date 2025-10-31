@@ -1,0 +1,14 @@
+# 2. Service LoadBalancer para Acesso Público
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-python-service
+  namespace: azure-store-1758905293727
+spec:
+  type: LoadBalancer
+  selector:
+    app: hello-python
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
