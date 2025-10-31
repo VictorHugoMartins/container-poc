@@ -88,6 +88,7 @@ jobs:
             hello-python.yaml
             hello-python-service.yaml
             hello-python-hpa.yaml
+            hello-python-ingress.yaml
           images: |
             ${{ steps.build-image.outputs.image_tag }}
           namespace: azure-store-1758905293727

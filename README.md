@@ -36,6 +36,12 @@ kubectl logs hello-python-deployment-86c54bb7c7-bfgh5 --namespace azure-store-17
 I. Configuração Inicial e Variáveis
 Dadas as variáveis de configuração:
 
+
+```
+# para descobrir o nsg name
+az network nsg list --resource-group MC_k8scluster_group_clusterk8s_eastus -o table 
+```
+
 ```
 $NOME_CLUSTER="clusterk8s" # nome do cluster do AKS
 $RG_PRINCIPAL="k8scluster_group"
@@ -157,4 +163,10 @@ az keyvault certificate import --vault-name k8sgroupvault --name <KeyVaultCertif
 Em caso de erro de permissão:
 ```
 az role assignment create  --role "Key Vault Reader"  --assignee-object-id "990a38bb-3a55-4f81-b4fe-884832be0ee3"  --scope "/subscriptions/670bc431-d5b3-4586-afcc-5b920f8c7e5e/resourcegroups/k8scluster_group/providers/Microsoft.KeyVault/vaults/k8sgroupvault"  --assignee-principal-type User
+```
+
+
+```
+# liberar porta 80
+az network nsg rule create  --resource-group MC_k8scluster_group_clusterk8s_eastus --nsg-name aks-agentpool-30022306-nsg --name AllowHTTP --priority 100 --direction Inbound  --access Allow --protocol Tcp --destination-port-range 80 --source-address-prefixes '*' --destination-address-prefixes '*'
 ```
