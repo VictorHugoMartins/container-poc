@@ -17,7 +17,17 @@ az aks get-credentials --resource-group k8scluster_group --name clusterk8s --ove
 kubectl get pods -n azure-store-1758905293727
 ```
 
-3. Liste os logs do seu Pod.
+3. Identificar o IP **externo** do Pod
+```
+kubectl logs hello-python-deployment-86c54bb7c7-bfgh5 --namespace azure-store-1758905293727
+```
+
+3.1 Identificar o IP **interno** do Pod
+```
+kubectl get svc
+```
+
+4. Liste os logs do seu Pod.
 ```
 kubectl logs hello-python-deployment-86c54bb7c7-bfgh5 --namespace azure-store-1758905293727
 ```
@@ -29,6 +39,10 @@ Dadas as variáveis de configuração:
 ```
 $NOME_CLUSTER="clusterk8s" # nome do cluster do AKS
 $RG_PRINCIPAL="k8scluster_group"
+$NSG_RG="MC_k8scluster_group_clusterk8s_eastus"
+NSG_NAME=$(az network nsg list \
+    --resource-group $NSG_RG \
+    --query "[?contains(name, 'aks-agentpool')].name" -o tsv) # $NSG_NAME="aks-agentpool-30022306-nsg"
 SEU_EMAIL="<SEU_EMAIL_PARA_LETS_ENCRYPT>"
 SEU_DOMINIO="<SEU_DOMINIO_REAL_EX_app.minhaempresa.com>"
 NS_APP="azure-store-1758905293727" # Namespace da sua aplicação
@@ -41,6 +55,10 @@ echo "RG de Infraestrutura: $RG_NO"
 ```
 kubectl get deployment -n azure-store-1758905293727
 kubectl scale deployment/hello-python-deployment --replicas=0 -n azure-store-1758905293727 
+```
+Para reiniciar:
+```
+kubectl scale deployment/hello-python-deployment --replicas=1 -n azure-store-1758905293727 
 ```
 
 ## Liberar as portas 80 e 443
@@ -113,3 +131,30 @@ Atualizar o DNS: Atualize o hello-python-aks.duckdns.org com o IP obtido.
 Aplicar as Mudanças no YAML: Prossiga com o Passo 2 do meu roteiro anterior (mudar o seu Service para ClusterIP e criar o Ingress).
 
 Forçar Nova Emissão do Certificado: Depois de aplicar tudo, o cert-manager finalmente deverá conseguir validar e emitir o certificado.
+
+
+### Configurar um nome de domínio personalizado e um certificado SSL com o complemento de roteamento de aplicativo
+Baseado no (Microsoft Learn)[https://learn.microsoft.com/pt-br/azure/aks/app-routing-dns-ssl]
+
+
+```
+az provider register --namespace Microsoft.KeyVault
+```
+
+```
+az keyvault create --resource-group <ResourceGroupName> --location <Location> --name <KeyVaultName> --enable-rbac-authorization true 
+# az keyvault create --resource-group RG-Vaults --location eastus --name k8sgroupvault --enable-rbac-authorization true
+```
+
+```
+openssl req -new -x509 -nodes -out aks-ingress-tls.crt -keyout aks-ingress-tls.key -subj "/CN=hello-python-aks.duckdns.org" -addext "subjectAltName=DNS:hello-python-aks.duckdns.org"
+```
+
+
+```
+az keyvault certificate import --vault-name k8sgroupvault --name <KeyVaultCertificateName> --file aks-ingress-tls.pfx [--password <certificate password if specified>]
+```
+Em caso de erro de permissão:
+```
+az role assignment create  --role "Key Vault Reader"  --assignee-object-id "990a38bb-3a55-4f81-b4fe-884832be0ee3"  --scope "/subscriptions/670bc431-d5b3-4586-afcc-5b920f8c7e5e/resourcegroups/k8scluster_group/providers/Microsoft.KeyVault/vaults/k8sgroupvault"  --assignee-principal-type User
+```
