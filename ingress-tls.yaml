@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-python-ingress
+  namespace: azure-store-1758905293727
+  annotations:
+    # 2. Anotação para o Cert-Manager
+    # Diz ao cert-manager para usar o ClusterIssuer que criamos (letsencrypt-prod)
+    cert-manager.io/cluster-issuer: letsencrypt-prod 
+spec:
+  # 3. Adicionar a regra do nome de domínio
+  rules:
+  - host: hello-python-aks.duckdns.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: hello-python-service
+            port:
+              number: 80
+  # 4. Adicionar a seção TLS
+  tls:
+  - hosts:
+    - hello-python-aks.duckdns.org
+    secretName: hello-python-tls-secret

@@ -83,6 +83,8 @@ jobs:
           manifests: |
             hello-python.yaml
             hello-python-hpa.yaml
+            cluster-issuer.yaml
+            ingress-tls.yaml
           images: |
             ${{ steps.build-image.outputs.image_tag }}
           namespace: azure-store-1758905293727
